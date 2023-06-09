@@ -1,10 +1,11 @@
+
 import * as tf from '@tensorflow/tfjs';
 import { useCallback, useState } from 'react';
-
 
 function App() {
 
   const [tensorData, setTensorData] = useState<tf.Tensor<tf.Rank> | tf.Tensor<tf.Rank>[]>()
+  const [tensorOutput, setTensorOutput] = useState()
 
   const triggerModel = useCallback(() => {
     // Define a model for linear regression.
@@ -22,7 +23,8 @@ function App() {
     model.fit(xs, ys).then(() => {
     // Use the model to do inference on a data point the model hasn't seen before:
     let res = model.predict(tf.tensor2d([10], [1, 1]))
-      setTensorData(res)
+    setTensorData(res)
+    setTensorOutput(res.dataSync())
   });
   }, [])
 
@@ -35,9 +37,18 @@ function App() {
       {
         tensorData && <pre className='pt-10'>{JSON.stringify(tensorData, null, 2)}</pre>
       }
+
+      <h1 className='font-bold text-2xl pt-10'>Output</h1>
+        {
+        tensorOutput && <pre className='pt-2'>{JSON.stringify(tensorOutput, null, 2)}</pre>
+      }
       </div>
     </div>
   );
 }
 
 export default App;
+
+
+
+
